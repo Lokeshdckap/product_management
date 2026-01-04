@@ -37,6 +37,10 @@
                class="block px-4 py-2 rounded hover:bg-gray-800 transition-colors">
                Products
             </a>
+             <a href="{{ url('/admin/imports') }}"
+               class="block px-4 py-2 rounded hover:bg-gray-800 transition-colors">
+               Imports
+            </a>
         </nav>
 
         <div class="px-6 py-4 border-t border-gray-700">

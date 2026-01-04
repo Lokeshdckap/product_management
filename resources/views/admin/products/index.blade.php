@@ -15,12 +15,53 @@
            class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors">
             Create New Product
         </a>
-        <a href="{{ url('/admin/products/create') }}"
-           class="px-4 py-2 bg-black text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors">
-            Import CSV File 
-        </a>
+        <button
+        onclick="openImportModal()"
+        class="px-4 py-2 bg-black text-white text-sm font-medium rounded-md hover:bg-gray-800 transition-colors">
+        Import CSV File
+    </button>
     </div>
 </div>
+
+<!-- Import CSV Modal -->
+<div id="importModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold text-gray-800">Import Products (CSV)</h2>
+            <button onclick="closeImportModal()" class="text-gray-500 hover:text-gray-700 text-xl">&times;</button>
+        </div>
+
+        <form action="{{ route('admin.products.import') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Choose CSV File
+                </label>
+                <input
+                    type="file"
+                    name="file"
+                    accept=".csv,.xlsx"
+                    required
+                    class="block w-full text-sm text-gray-700 border border-gray-300 rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <button type="button"
+                        onclick="closeImportModal()"
+                        class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
+                    Cancel
+                </button>
+                <button type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    Import Products
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 
     <div class="overflow-x-auto bg-white shadow rounded-lg border border-gray-200">
         <table class="min-w-full divide-y divide-gray-200">
@@ -65,3 +106,15 @@
 
 </div>
 @endsection
+
+<script>
+    function openImportModal() {
+        document.getElementById('importModal').classList.remove('hidden');
+        document.getElementById('importModal').classList.add('flex');
+    }
+
+    function closeImportModal() {
+        document.getElementById('importModal').classList.add('hidden');
+        document.getElementById('importModal').classList.remove('flex');
+    }
+</script>
