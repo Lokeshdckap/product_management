@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Customer\DashboardController;
 
 
 use Illuminate\Support\Str;
@@ -33,6 +34,33 @@ Route::get('/generate-csv', function () {
 Route::get('/', function () {
     phpinfo();
 });
+
+
+
+
+
+Route::post('/heartbeat', function () {
+
+    if (auth('admin')->check()) {
+        auth('admin')->user()->update([
+            'is_online'   => true,
+            'last_seen_at'=> now(),
+        ]);
+    }
+
+    if (auth('customer')->check()) {
+        auth('customer')->user()->update([
+            'is_online'   => true,
+            'last_seen_at'=> now(),
+        ]);
+    }
+
+    return response()->json(['status' => 'ok']);
+});
+
+
+
+
 
 
 

@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Auth\RegistrationController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -7,39 +8,51 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ImportController;
 
-
+/*
+|--------------------------------------------------------------------------
+| Admin Auth Routes
+|--------------------------------------------------------------------------
+*/
 
 Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/login', [LoginController::class, 'showLoginForm'])
-        ->name('admin.login');
-    Route::post('/login', [LoginController::class, 'login']);
+        ->name('login');
+
+    Route::post('/login', [LoginController::class, 'login'])->name('loginCheck');
 
     Route::get('/register', [RegistrationController::class, 'showRegistrationForm'])
-        ->name('admin.register');
-    Route::post('/register', [RegistrationController::class, 'register'])->name('admin.store');
+        ->name('register');
 
-    // Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function () {
-    Route::resource('products', ProductController::class);
-    Route::resource('categories', CategoryController::class);
+    Route::post('/register', [RegistrationController::class, 'register'])
+        ->name('store');
+});
 
-    Route::post('products/import', [ProductController::class, 'import'])
-    ->name('products.import');
 
-    Route::get('/imports', ImportController::class);
+/*
+|--------------------------------------------------------------------------
+| Admin Protected Routes
+|--------------------------------------------------------------------------
+*/
 
-    Route::get('/imports/{import}/failed-download',[ImportController::class, 'downloadFailed'])->name('admin.imports.failed.download');
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware('auth:admin')
+    ->group(function () {
 
-// });
-
-    // Route::middleware('auth:admin')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])
-            ->name('admin.dashboard');
+            ->name('dashboard');
 
-        Route::get('/prodi', [DashboardController::class, 'index'])
-            ->name('admin.dashboard');
+        Route::resource('products', ProductController::class);
+        Route::resource('categories', CategoryController::class);
+
+        Route::post('products/import', [ProductController::class, 'import'])
+            ->name('products.import');
+
+        Route::get('/imports', ImportController::class);
+        Route::get('/imports/{import}/failed-download', [ImportController::class, 'downloadFailed'])
+            ->name('imports.failed.download');
 
         Route::post('/logout', [LoginController::class, 'logout'])
-            ->name('admin.logout');
-    // });
-});
+            ->name('logout');
+    });
