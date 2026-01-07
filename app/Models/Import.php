@@ -8,14 +8,14 @@ use Illuminate\Support\Str;
 class Import extends Model
 {
     protected $fillable = [
-        'uuid',
-        'import_type',
-        'original_file',
-        'failed_file',
-        'status',
-        'total_rows',
-        'processed_rows',
-        'failed_rows',
+        "uuid",
+        "import_type",
+        "original_file",
+        "failed_file",
+        "status",
+        "total_rows",
+        "processed_rows",
+        "failed_rows",
     ];
 
     protected static function booted()
@@ -25,4 +25,3 @@ class Import extends Model
         });
     }
 }
-

@@ -8,12 +8,6 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ImportController;
 
-/*
-|--------------------------------------------------------------------------
-| Admin Auth Routes
-|--------------------------------------------------------------------------
-*/
-
 
 Route::prefix('admin')
     ->name('admin.')
@@ -33,12 +27,6 @@ Route::prefix('admin')
             ->name('store');
     });
 
-
-/*
-|--------------------------------------------------------------------------
-| Admin Protected Routes
-|--------------------------------------------------------------------------
-*/
 
 Route::prefix('admin')
     ->name('admin.')

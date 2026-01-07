@@ -59,10 +59,10 @@ class ProductsImport implements
             }
 
             $validator = Validator::make($data, [
-                'name'     => 'required|string|max:255',
-                'price'    => 'required|numeric|min:0',
-                'stock'    => 'required|integer|min:0',
-                'category' => 'required|string|max:255',
+                "name" => "required|string|max:255",
+                "price" => "required|numeric|min:0",
+                "stock" => "required|integer|min:0",
+                "category" => "required|string|max:255",
             ]);
 
             if ($validator->fails()) {
@@ -71,29 +71,29 @@ class ProductsImport implements
                 return;
             }
 
-            $categoryName = $data['category'];
+            $categoryName = $data["category"];
 
             if (!isset($this->categoryCache[$categoryName])) {
-                $this->categoryCache[$categoryName] =
-                    Category::firstOrCreate(['name' => $categoryName])->id;
+                $this->categoryCache[$categoryName] = Category::firstOrCreate([
+                    "name" => $categoryName,
+                ])->id;
             }
 
             Product::updateOrCreate(
-                ['name' => $data['name']],
+                ["name" => $data["name"]],
                 [
-                    'description' => $data['description'] ?? null,
-                    'price'       => $data['price'],
-                    'stock'       => $data['stock'],
-                    'category_id' => $this->categoryCache[$categoryName],
-                    'image'       => $data['image'] ?? 'products/default.png',
+                    "description" => $data["description"] ?? null,
+                    "price" => $data["price"],
+                    "stock" => $data["stock"],
+                    "category_id" => $this->categoryCache[$categoryName],
+                    "image" => $data["image"] ?? "products/default.png",
                 ]
             );
 
             $this->incrementCounters(false);
-
         } catch (\Exception $e) {
-            $this->writeFailedRow($data, ['Exception: ' . $e->getMessage()]);
-            Log::error('Import error', ['message' => $e->getMessage()]);
+            $this->writeFailedRow($data, ["Exception: " . $e->getMessage()]);
+            Log::error("Import error", ["message" => $e->getMessage()]);
             $this->incrementCounters(true);
         }
     }
@@ -101,28 +101,33 @@ class ProductsImport implements
     protected function writeFailedRow(array $data, array $errors): void
     {
         $csv =
-            $this->csv($data['name'] ?? '') . ',' .
-            $this->csv($data['price'] ?? '') . ',' .
-            $this->csv($data['stock'] ?? '') . ',' .
-            $this->csv($data['category'] ?? '') . ',' .
-            $this->csv(implode(' | ', $errors)) . "\n";
+            $this->csv($data["name"] ?? "") .
+            "," .
+            $this->csv($data["price"] ?? "") .
+            "," .
+            $this->csv($data["stock"] ?? "") .
+            "," .
+            $this->csv($data["category"] ?? "") .
+            "," .
+            $this->csv(implode(" | ", $errors)) .
+            "\n";
 
         Storage::append($this->failedFilePath, $csv);
     }
 
     protected function incrementCounters(bool $failed): void
     {
-        Import::where('id', $this->importId)->increment('processed_rows');
+        Import::where("id", $this->importId)->increment("processed_rows");
 
         if ($failed) {
-            Import::where('id', $this->importId)->increment('failed_rows');
+            Import::where("id", $this->importId)->increment("failed_rows");
         }
     }
 
     protected function isEmptyRow(array $data): bool
     {
         foreach ($data as $v) {
-            if (trim((string) $v) !== '') {
+            if (trim((string) $v) !== "") {
                 return false;
             }
         }
@@ -156,12 +161,12 @@ class ProductsImport implements
                 }
 
                 $import->update([
-                    'status' => $import->failed_rows > 0
-                        ? 'completed_with_errors'
-                        : 'completed',
-                    'failed_file' => $import->failed_rows > 0
-                        ? $this->failedFilePath
-                        : null,
+                    "status" =>
+                        $import->failed_rows > 0
+                            ? "completed_with_errors"
+                            : "completed",
+                    "failed_file" =>
+                        $import->failed_rows > 0 ? $this->failedFilePath : null,
                 ]);
             },
         ];
@@ -169,7 +174,7 @@ class ProductsImport implements
 
     public function onError(Throwable $e): void
     {
-        Log::error('Excel error', ['message' => $e->getMessage()]);
+        Log::error("Excel error", ["message" => $e->getMessage()]);
         $this->incrementCounters(true);
     }
 }

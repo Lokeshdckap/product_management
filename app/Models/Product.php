@@ -4,20 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-    use Illuminate\Support\Str;
+use Illuminate\Support\Str;
 
 class Product extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'uuid',
-        'name',
-        'description',
-        'price',
-        'image',
-        'category_id',
-        'stock',
+        "uuid",
+        "name",
+        "description",
+        "price",
+        "image",
+        "category_id",
+        "stock",
     ];
 
     protected static function booted()
@@ -29,7 +29,7 @@ class Product extends Model
 
     public function getRouteKeyName()
     {
-        return 'uuid';
+        return "uuid";
     }
 
     public function category()
@@ -37,7 +37,3 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 }
-
-
- 
-

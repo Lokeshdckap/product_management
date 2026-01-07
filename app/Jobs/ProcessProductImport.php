@@ -31,7 +31,7 @@ class ProcessProductImport implements ShouldQueue
         Excel::queueImport(
             new ProductsImport($this->importId),
             $this->filePath,
-            'local'
+            "local"
         );
     }
 }

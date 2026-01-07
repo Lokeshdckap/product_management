@@ -5,11 +5,6 @@ use App\Http\Controllers\Customer\HomeController;
 use App\Http\Controllers\Customer\Auth\LoginController;
 use App\Http\Controllers\Customer\Auth\RegistrationController;
 
-/*
-|--------------------------------------------------------------------------
-| Customer Authentication Routes (Guest)
-|--------------------------------------------------------------------------
-*/
 
 Route::middleware('guest:customer')->group(function () {
 
@@ -27,11 +22,7 @@ Route::middleware('guest:customer')->group(function () {
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| Customer Protected Routes (Auth)
-|--------------------------------------------------------------------------
-*/
+
 
 Route::middleware('auth:customer')->group(function () {
 

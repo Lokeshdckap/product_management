@@ -14,15 +14,15 @@ class RegistrationController extends Controller
 {
     public function showRegistrationForm()
     {
-        return view('admin.auth.register');
+        return view("admin.auth.register");
     }
 
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:admins,email'],
-            'password' => ['required', 'string', 'min:6', 'confirmed'],
+            "name" => ["required", "string", "max:255"],
+            "email" => ["required", "email", "max:255", "unique:admins,email"],
+            "password" => ["required", "string", "min:6", "confirmed"],
         ]);
 
         if ($validator->fails()) {
@@ -39,10 +39,10 @@ class RegistrationController extends Controller
         $admin->password = Hash::make($request->password);
         $admin->save();
 
-        Auth::guard('admin')->login($admin);
+        Auth::guard("admin")->login($admin);
 
         return redirect()
-            ->route('admin.dashboard')
-            ->with('success', 'Admin registered and logged in successfully');
+            ->route("admin.dashboard")
+            ->with("success", "Admin registered and logged in successfully");
     }
 }

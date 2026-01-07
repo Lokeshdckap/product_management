@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 class Category extends Model
 {
-    protected $fillable = ['uuid', 'name'];
+    protected $fillable = ["uuid", "name"];
 
     protected static function booted()
     {
@@ -19,13 +19,11 @@ class Category extends Model
 
     public function getRouteKeyName()
     {
-        return 'uuid';
+        return "uuid";
     }
-
 
     public function products()
     {
         return $this->hasMany(Product::class);
     }
 }
-

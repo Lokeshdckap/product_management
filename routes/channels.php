@@ -22,12 +22,10 @@ Broadcast::channel('presence-customers', function () {
     $customer = Auth::guard('customer')->user();
     $admin    = Auth::guard('admin')->user();
 
-    // Customer joins self
     if ($customer) {
         return ['id' => $customer->id, 'name' => $customer->name, 'type' => 'customer'];
     }
 
-    // Admin joins then view all customers
     if ($admin) {
         return ['id' => $admin->id, 'name' => $admin->name, 'type' => 'admin-view'];
     }

@@ -19,137 +19,139 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with('category')
+        $products = Product::with("category")
             ->latest()
             ->paginate(10);
 
-        return view('admin.products.index', compact('products'));
+        return view("admin.products.index", compact("products"));
     }
 
     public function create()
     {
-        $categories = Category::orderBy('name')->get();
-        return view('admin.products.create', compact('categories'));
+        $categories = Category::orderBy("name")->get();
+        return view("admin.products.create", compact("categories"));
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'price' => ['required', 'numeric', 'min:0'],
-            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png'],
-            'category_id' => ['nullable', 'exists:categories,id'],
-            'stock' => ['required', 'integer', 'min:0'],
+            "name" => ["required", "string", "max:255"],
+            "description" => ["nullable", "string"],
+            "price" => ["required", "numeric", "min:0"],
+            "image" => ["nullable", "image", "mimes:jpg,jpeg,png"],
+            "category_id" => ["nullable", "exists:categories,id"],
+            "stock" => ["required", "integer", "min:0"],
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            return response()->json(["errors" => $validator->errors()], 422);
         }
 
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products', 'public');
+        if ($request->hasFile("image")) {
+            $imagePath = $request->file("image")->store("products", "public");
         } else {
-            $imagePath = 'default.png';
+            $imagePath = "default.png";
         }
 
         $product = new Product();
-        $product->name = $validator->validated()['name'];
-        $product->description = $validator->validated()['description'];
-        $product->price = $validator->validated()['price'];
+        $product->name = $validator->validated()["name"];
+        $product->description = $validator->validated()["description"];
+        $product->price = $validator->validated()["price"];
         $product->image = $imagePath;
-        $product->category_id = $validator->validated()['category_id'];
-        $product->stock = $validator->validated()['stock'];
+        $product->category_id = $validator->validated()["category_id"];
+        $product->stock = $validator->validated()["stock"];
 
         $product->save();
 
-        return redirect()->route('admin.products.index')->with('success', 'Product created successfully');
+        return redirect()
+            ->route("admin.products.index")
+            ->with("success", "Product created successfully");
     }
 
     public function edit(Product $product)
-    {  
-        $categories = Category::orderBy('name')->get();
-        return view('admin.products.edit', compact('product','categories'));
+    {
+        $categories = Category::orderBy("name")->get();
+        return view("admin.products.edit", compact("product", "categories"));
     }
 
     public function update(Request $request, Product $product)
     {
-    $validator = Validator::make($request->all(), [
-        'name' => ['required', 'string', 'max:255'],
-        'description' => ['nullable', 'string'],
-        'price' => ['required', 'numeric', 'min:0'],
-        'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png'],
-        'category_id' => ['nullable', 'exists:categories,id'],
-        'stock' => ['required', 'integer', 'min:0'],
-    ]);
+        $validator = Validator::make($request->all(), [
+            "name" => ["required", "string", "max:255"],
+            "description" => ["nullable", "string"],
+            "price" => ["required", "numeric", "min:0"],
+            "image" => ["nullable", "image", "mimes:jpg,jpeg,png"],
+            "category_id" => ["nullable", "exists:categories,id"],
+            "stock" => ["required", "integer", "min:0"],
+        ]);
 
-    if ($validator->fails()) {
-        return response()->json(['errors' => $validator->errors()], 422);
-    }
-
-    $data = $validator->validated();
-
-    if ($request->hasFile('image')) {
-        if ($product->image && $product->image !== 'products/default.png') {
-            Storage::disk('public')->delete($product->image);
+        if ($validator->fails()) {
+            return response()->json(["errors" => $validator->errors()], 422);
         }
-        $data['image'] = $request->file('image')->store('products', 'public');
-    }
 
-    $product->update($data);
+        $data = $validator->validated();
 
-    return redirect()->route('admin.products.index')
-                     ->with('success', 'Product updated successfully');
+        if ($request->hasFile("image")) {
+            if ($product->image && $product->image !== "products/default.png") {
+                Storage::disk("public")->delete($product->image);
+            }
+            $data["image"] = $request
+                ->file("image")
+                ->store("products", "public");
+        }
+
+        $product->update($data);
+
+        return redirect()
+            ->route("admin.products.index")
+            ->with("success", "Product updated successfully");
     }
 
     public function destroy(Product $product)
     {
-        if ($product->image && $product->image !== 'products/default.png') {
-            Storage::disk('public')->delete($product->image);
+        if ($product->image && $product->image !== "products/default.png") {
+            Storage::disk("public")->delete($product->image);
         }
 
         $product->delete();
 
-        return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully');
+        return redirect()
+            ->route("admin.products.index")
+            ->with("success", "Product deleted successfully");
     }
 
     public function import(Request $request)
-{
-    $validator = Validator::make($request->all(), [
-        'file' => ['required', 'file', 'mimes:csv,xlsx'],
-    ]);
+    {
+        $validator = Validator::make($request->all(), [
+            "file" => ["required", "file", "mimes:csv,xlsx"],
+        ]);
 
+        if ($validator->fails()) {
+            return redirect()
+                ->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
 
-    if ($validator->fails()) {
+        $path = $request->file("file")->store("imports/original");
+
+        $import = new Import();
+        $import->import_type = "products";
+        $import->admin_id = 1;
+        $import->original_file = $path;
+        $import->status = "pending";
+        $import->processed_rows = 0;
+        $import->failed_rows = 0;
+
+        $import->save();
+
+        ProcessProductImport::dispatch($import->id, $path);
+
         return redirect()
             ->back()
-            ->withErrors($validator)
-            ->withInput();
+            ->with(
+                "success",
+                "Import started. Products will be added in background."
+            );
     }
-
- 
-    $path = $request->file('file')->store('imports/original');
-
-
-    $import = new Import();
-    $import->import_type = 'products';
-    $import->admin_id = 1;
-    $import->original_file = $path;
-    $import->status = 'pending';
-    $import->processed_rows = 0;
-    $import->failed_rows = 0;
-
-
-
-$import->save();
-
-ProcessProductImport::dispatch($import->id, $path);
-
-    return redirect()
-        ->back()
-        ->with('success', 'Import started. Products will be added in background.');
 }
-
-
-}
-

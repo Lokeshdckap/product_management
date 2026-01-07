@@ -8,12 +8,13 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Admin;
 use App\Models\Customer;
 
-
 class DashboardController extends Controller
 {
     public function index()
     {
-
-        return view('admin.dashboard', ['admins' => Admin::select('id', 'name')->get(),'customers' => Customer::select('id', 'name')->get()]);
+        return view("admin.dashboard", [
+            "admins" => Admin::select("id", "name")->get(),
+            "customers" => Customer::select("id", "name")->get(),
+        ]);
     }
 }

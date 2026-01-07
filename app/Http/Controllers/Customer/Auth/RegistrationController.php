@@ -14,18 +14,22 @@ use App\Models\Customer;
 
 class RegistrationController extends Controller
 {
-   public function showRegistrationForm()
+    public function showRegistrationForm()
     {
-        return view('customer.auth.register');
+        return view("customer.auth.register");
     }
 
     public function register(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:customers,email'],
-            'password' => ['required', 'string', 'min:6', 'confirmed'],
+            "name" => ["required", "string", "max:255"],
+            "email" => [
+                "required",
+                "email",
+                "max:255",
+                "unique:customers,email",
+            ],
+            "password" => ["required", "string", "min:6", "confirmed"],
         ]);
 
         if ($validator->fails()) {
@@ -37,16 +41,16 @@ class RegistrationController extends Controller
 
         $customer = new Customer();
         $customer->uuid = Str::uuid();
-        $customer->name = $request->input('name');
-        $customer->email = $request->input('email');
-        $customer->password = Hash::make($request->input('password'));
+        $customer->name = $request->input("name");
+        $customer->email = $request->input("email");
+        $customer->password = Hash::make($request->input("password"));
 
         $customer->save();
 
-        Auth::guard('customer')->login($customer);
+        Auth::guard("customer")->login($customer);
 
-
-        return redirect()->route('home')
-            ->with('success', 'customer created successfully');
-    } 
+        return redirect()
+            ->route("home")
+            ->with("success", "customer created successfully");
+    }
 }
