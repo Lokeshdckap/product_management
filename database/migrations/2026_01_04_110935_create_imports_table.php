@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('import_type'); 
             $table->foreignIdFor(Admin::class);
             $table->string('original_file'); 
+            $table->string('original_name'); 
+
             $table->string('failed_file')->nullable(); 
 
             $table->enum('status', [
@@ -29,7 +31,6 @@ return new class extends Migration
                 'failed'
             ])->default('pending');
 
-            $table->unsignedInteger('total_rows')->default(0);
             $table->unsignedInteger('processed_rows')->default(0);
             $table->unsignedInteger('failed_rows')->default(0);
 

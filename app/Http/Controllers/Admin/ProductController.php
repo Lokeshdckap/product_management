@@ -44,13 +44,16 @@ class ProductController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(["errors" => $validator->errors()], 422);
+            return redirect()
+                ->back()
+                ->withErrors($validator)
+                ->withInput();
         }
 
         if ($request->hasFile("image")) {
             $imagePath = $request->file("image")->store("products", "public");
         } else {
-            $imagePath = "default.png";
+            $imagePath = "products/default.png";
         }
 
         $product = new Product();
@@ -86,7 +89,10 @@ class ProductController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(["errors" => $validator->errors()], 422);
+            return redirect()
+                ->back()
+                ->withErrors($validator)
+                ->withInput();
         }
 
         $data = $validator->validated();
@@ -133,12 +139,15 @@ class ProductController extends Controller
                 ->withInput();
         }
 
-        $path = $request->file("file")->store("imports/original");
+        $uploadedFile = $request->file("file"); 
+
+        $path = $uploadedFile->store("imports/original");
 
         $import = new Import();
         $import->import_type = "products";
-        $import->admin_id = 1;
+        $import->admin_id = auth()->id();
         $import->original_file = $path;
+        $import->original_name = $uploadedFile->getClientOriginalName();
         $import->status = "pending";
         $import->processed_rows = 0;
         $import->failed_rows = 0;

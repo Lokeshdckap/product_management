@@ -15,7 +15,6 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Import Type</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Original File </th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Status</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">total_rows</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">processed_rows</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">failed_rows</th>
 
@@ -47,7 +46,6 @@
             </span>
         </td>
 
-        <td class="px-6 py-4 text-sm text-gray-900">{{ $import->total_rows }}</td>
         <td class="px-6 py-4 text-sm text-gray-900">{{ $import->processed_rows }}</td>
         <td class="px-6 py-4 text-sm text-gray-900">{{ $import->failed_rows }}</td>
 

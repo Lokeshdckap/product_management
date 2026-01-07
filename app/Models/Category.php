@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 
 class Category extends Model
 {
+    use HasFactory;
     protected $fillable = ["uuid", "name"];
 
     protected static function booted()
