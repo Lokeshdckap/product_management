@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Imports\ProductsImport;
 use Maatwebsite\Excel\Facades\Excel;
-
+use Maatwebsite\Excel\HeadingRowImport;
+use App\Jobs\ProcessProductImport;
 
 class ProductController extends Controller
 {
@@ -89,7 +90,7 @@ class ProductController extends Controller
     $data = $validator->validated();
 
     if ($request->hasFile('image')) {
-        if ($product->image && $product->image !== 'default.png') {
+        if ($product->image && $product->image !== 'products/default.png') {
             Storage::disk('public')->delete($product->image);
         }
         $data['image'] = $request->file('image')->store('products', 'public');
@@ -103,7 +104,7 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        if ($product->image && $product->image !== 'default.png') {
+        if ($product->image && $product->image !== 'products/default.png') {
             Storage::disk('public')->delete($product->image);
         }
 
@@ -118,6 +119,7 @@ class ProductController extends Controller
         'file' => ['required', 'file', 'mimes:csv,xlsx'],
     ]);
 
+
     if ($validator->fails()) {
         return redirect()
             ->back()
@@ -130,21 +132,18 @@ class ProductController extends Controller
 
 
     $import = new Import();
-    // $import->uuid = Str::uuid();
     $import->import_type = 'products';
     $import->admin_id = 1;
     $import->original_file = $path;
     $import->status = 'pending';
-    $import->total_rows = 0;
     $import->processed_rows = 0;
     $import->failed_rows = 0;
-    $import->save();
 
-    Excel::queueImport(
-        new ProductsImport($import->id),
-        $path,
-        'local' 
-    );
+
+
+$import->save();
+
+ProcessProductImport::dispatch($import->id, $path);
 
     return redirect()
         ->back()

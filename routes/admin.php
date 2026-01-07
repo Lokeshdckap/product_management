@@ -14,19 +14,24 @@ use App\Http\Controllers\Admin\ImportController;
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('admin')->name('admin.')->group(function () {
 
-    Route::get('/login', [LoginController::class, 'showLoginForm'])
-        ->name('login');
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware('guest:admin')
+    ->group(function () {
 
-    Route::post('/login', [LoginController::class, 'login'])->name('loginCheck');
+        Route::get('/login', [LoginController::class, 'showLoginForm'])
+            ->name('login');
 
-    Route::get('/register', [RegistrationController::class, 'showRegistrationForm'])
-        ->name('register');
+        Route::post('/login', [LoginController::class, 'login'])
+            ->name('loginCheck');
 
-    Route::post('/register', [RegistrationController::class, 'register'])
-        ->name('store');
-});
+        Route::get('/register', [RegistrationController::class, 'showRegistrationForm'])
+            ->name('register');
+
+        Route::post('/register', [RegistrationController::class, 'register'])
+            ->name('store');
+    });
 
 
 /*
@@ -44,6 +49,7 @@ Route::prefix('admin')
             ->name('dashboard');
 
         Route::resource('products', ProductController::class);
+        
         Route::resource('categories', CategoryController::class);
 
         Route::post('products/import', [ProductController::class, 'import'])

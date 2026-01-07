@@ -10,8 +10,18 @@
     <!-- Fonts -->
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-    <!-- Tailwind CSS -->
+    <!-- Tailwind (DEV only) -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    window.Laravel = {
+        userType: '{{ auth("admin")->check() ? "admin" : (auth("customer")->check() ? "customer" : "") }}'
+    };
+</script>
+
+
+    <!-- Vite JS -->
+   @vite(['resources/js/app.js'])
+    @stack('scripts')
 </head>
 
 <body class="font-sans antialiased bg-gray-100">
@@ -25,29 +35,28 @@
         </div>
 
         <nav class="mt-4 flex-1 px-2 space-y-1 text-gray-300">
-            <a href="{{ url('/admin/dashboard') }}"
-               class="block px-4 py-2 rounded hover:bg-gray-800 transition-colors">
-               Dashboard
+            <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 rounded hover:bg-gray-800">
+                Dashboard
             </a>
-            <a href="{{ url('/admin/categories') }}"
-               class="block px-4 py-2 rounded hover:bg-gray-800 transition-colors">
-               Category
+            <a href="{{ url('/admin/categories') }}" class="block px-4 py-2 rounded hover:bg-gray-800">
+                Categories
             </a>
-            <a href="{{ url('/admin/products') }}"
-               class="block px-4 py-2 rounded hover:bg-gray-800 transition-colors">
-               Products
+            <a href="{{ url('/admin/products') }}" class="block px-4 py-2 rounded hover:bg-gray-800">
+                Products
             </a>
-             <a href="{{ url('/admin/imports') }}"
-               class="block px-4 py-2 rounded hover:bg-gray-800 transition-colors">
-               Imports
+            <a href="{{ url('/admin/imports') }}" class="block px-4 py-2 rounded hover:bg-gray-800">
+                Imports
             </a>
         </nav>
 
         <div class="px-6 py-4 border-t border-gray-700">
-            <a href=""
-               class="block px-4 py-2 rounded bg-red-600 hover:bg-red-700 text-white text-center transition-colors">
-                Logout
-            </a>
+            <form method="POST" action="{{ route('admin.logout') }}">
+                @csrf
+                <button type="submit"
+                    class="w-full px-4 py-2 rounded bg-red-600 hover:bg-red-700 text-white">
+                    Logout
+                </button>
+            </form>
         </div>
     </aside>
 
@@ -59,6 +68,9 @@
     </div>
 
 </div>
+
+<!-- STACKED SCRIPTS MUST BE AT THE END OF BODY -->
+@stack('scripts')
 
 </body>
 </html>

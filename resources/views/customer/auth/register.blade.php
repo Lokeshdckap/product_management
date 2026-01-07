@@ -28,7 +28,7 @@
   </div>
 
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-    <form action="{{ route('admin.store') }}" method="POST" class="space-y-6">
+    <form action="{{ route('register.store') }}" method="POST" class="space-y-6">
         @csrf
       <div>
         <label for="user_name" class="block text-sm/6 font-medium text-gray-100">User Name</label>
@@ -68,7 +68,7 @@
 
     <p class="mt-10 text-center text-sm/6 text-gray-400">
      Aready have a account ? 
-      <a href="/customer/login" class="font-semibold text-indigo-400 hover:text-indigo-300">Login here</a>
+      <a href="/login" class="font-semibold text-indigo-400 hover:text-indigo-300">Login here</a>
     </p>
   </div>
 </div>

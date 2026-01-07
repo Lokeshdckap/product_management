@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Customer\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -20,7 +21,7 @@ class LoginController extends Controller
         ]);
 
         if (Auth::guard('customer')->attempt($credentials)) {
-            return redirect()->route('customer.dashboard');
+            return redirect()->route('home');
         }
 
         return back()->withErrors(['email' => 'Invalid credentials']);

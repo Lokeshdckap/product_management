@@ -28,7 +28,8 @@
   </div>
 
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-    <form action="{{ route('customer.loginCheck') }}" method="POST" class="space-y-6">
+    <form action="{{ route('login.check') }}" method="POST" class="space-y-6">
+      @csrf
       <div>
         <label for="email" class="block text-sm/6 font-medium text-gray-100">Email address</label>
         <div class="mt-2">
@@ -55,7 +56,7 @@
 
     <p class="mt-10 text-center text-sm/6 text-gray-400">
      New to Account ? 
-      <a href="/customer/register" class="font-semibold text-indigo-400 hover:text-indigo-300">Register here</a>
+      <a href="/register" class="font-semibold text-indigo-400 hover:text-indigo-300">Register here</a>
     </p>
   </div>
 </div>

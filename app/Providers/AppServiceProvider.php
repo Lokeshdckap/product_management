@@ -25,12 +25,14 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(Login::class, function ($event) {
             $event->user->update([
                 'is_online' => true,
+                'last_seen' => now()
             ]);
         });
 
         Event::listen(Logout::class, function ($event) {
             $event->user->update([
                 'is_online' => false,
+                'last_seen' => now()
             ]);
         });
     }

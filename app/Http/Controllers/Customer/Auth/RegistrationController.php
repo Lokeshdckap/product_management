@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Customer;
 
 class RegistrationController extends Controller
@@ -23,12 +24,15 @@ class RegistrationController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:customers,email'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            return redirect()
+                ->back()
+                ->withErrors($validator)
+                ->withInput();
         }
 
         $customer = new Customer();
@@ -41,15 +45,8 @@ class RegistrationController extends Controller
 
         Auth::guard('customer')->login($customer);
 
-        dd(
-            Auth::guard('customer')->check(),
-            auth('customer')->id(),
-            auth('web')->check()
-        );
 
-
-
-        return redirect()->route('customer.dashboard')
+        return redirect()->route('home')
             ->with('success', 'customer created successfully');
     } 
 }

@@ -3,23 +3,36 @@
 use App\Models\Admin;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Auth;
 
-Broadcast::channel('presence.admins', function ($user) {
-    if ($user instanceof Admin) {
-        return [
-            'id' => $user->id,
-            'name' => $user->name,
-            'role' => 'admin',
-        ];
+Broadcast::routes([
+    'middleware' => ['web', 'broadcast.auth'],
+]);
+
+
+Broadcast::channel('presence-admins', function () {
+    if ($admin = Auth::guard('admin')->user()) {
+        return ['id' => $admin->id, 'name' => $admin->name];
     }
+    return false;
 });
 
-Broadcast::channel('presence.customers', function ($user) {
-    if ($user instanceof Customer) {
-        return [
-            'id' => $user->id,
-            'name' => $user->name,
-            'role' => 'customer',
-        ];
+
+Broadcast::channel('presence-customers', function () {
+    $customer = Auth::guard('customer')->user();
+    $admin    = Auth::guard('admin')->user();
+
+    // Customer joins self
+    if ($customer) {
+        return ['id' => $customer->id, 'name' => $customer->name, 'type' => 'customer'];
     }
+
+    // Admin joins then view all customers
+    if ($admin) {
+        return ['id' => $admin->id, 'name' => $admin->name, 'type' => 'admin-view'];
+    }
+
+    return false;
 });
+
+
