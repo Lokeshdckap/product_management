@@ -3,11 +3,6 @@
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Auth;
 
-/*
-|--------------------------------------------------------------------------
-| Broadcasting Routes
-|--------------------------------------------------------------------------
-*/
 Broadcast::routes([
     'middleware' => ['web', 'broadcast.auth'],
 ]);
@@ -40,10 +35,5 @@ Broadcast::channel('presence-customers', function () {
 
 Broadcast::channel('customer-monitor', function () {
     $isAdmin = auth('admin')->check();
-    \Illuminate\Support\Facades\Log::info('customer-monitor channel auth check', [
-        'is_admin' => $isAdmin,
-        'admin_id' => auth('admin')->id(),
-        'admin_user' => auth('admin')->user() ? auth('admin')->user()->name : 'none'
-    ]);
     return $isAdmin;
 });

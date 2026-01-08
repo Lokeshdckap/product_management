@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     axios.post('/presence/customer-joined')
         .then(response => {
-            console.log('Customer joined notification sent:', response.data);
+            console.log('Customer joined notification :', response.data);
         })
         .catch(error => {
             console.log('Failed error:', error);
