@@ -61,43 +61,115 @@
                 @endforeach
             </tbody>
         </table>
-  
     </div>
-
 </div>
 @endsection
+
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     if (!window.Echo) {
-        console.error('echo not connect');
+        console.error('echo not connection');
         return;
     }
-Echo.join('presence-admins')
-    .here(users => users.forEach(u => setStatus(u, 'admin', true)))
-    .joining(user => setStatus(user, 'admin', true))
-    .leaving(user => setStatus(user, 'admin', false));
 
-Echo.join('presence-customers')
-    .here(users => users.forEach(u => setStatus(u, 'customer', true)))
-    .joining(user => setStatus(user, 'customer', true))
-    .leaving(user => setStatus(user, 'customer', false));
+    Echo.join('presence-admins')
+        .here(users => {
+            users.forEach(user => {
+                if (user.role === 'admin') {
+                    setStatus(user, 'admin', true);
+                }
+            });
+        })
+        .joining(user => {
+            if (user.role === 'admin') {
+                setStatus(user, 'admin', true);
+            }
+        })
+        .leaving(user => {
+            if (user.role === 'admin') {
+                setStatus(user, 'admin', false);
+            }
+        });
+    
+    const customerMonitorChannel = Echo.private('customer-monitor')
+        .listen('.customer.presence.changed', (event) => {
 
-function setStatus(user, type, online) {
-    const dot = document.getElementById(`${type}-dot-${user.id}`);
-    const badge = document.getElementById(`${type}-status-${user.id}`);
-    if (!dot || !badge) return;
+            let customerId = null;
+            let status = null;
+            
+            if (event.customer && event.customer.id) {
+                customerId = event.customer.id;
+                status = event.status;
+            }
+                        
+            if (customerId) {
+                const isOnline = status === 'joined';
+                updateCustomer(customerId, isOnline);
+            } 
+            else {
+                console.log(event);
+            }
+        })
+        .error((error) => {
+            console.log('error:', error);
+        })
+        .subscribed(() => {
+            console.log('admin subscribed to customer-monitor');
+        });
 
-    dot.className = online
-        ? 'inline-block w-3 h-3 rounded-full bg-green-500'
-        : 'inline-block w-3 h-3 rounded-full bg-red-500';
 
-    badge.className = online
-        ? 'px-2 py-1 rounded text-xs bg-green-100 text-green-700'
-        : 'px-2 py-1 rounded text-xs bg-red-100 text-red-700';
+    function setStatus(user, type, online) {
+        const id = normalizeId(user.id);
+        const dot = document.getElementById(`${type}-dot-${id}`);
+        const badge = document.getElementById(`${type}-status-${id}`);
 
-    badge.innerText = online ? 'Online' : 'Offline';
-}
+        if (!dot || !badge) {
+            return;
+        }
+
+        dot.className = online
+            ? 'inline-block w-3 h-3 rounded-full bg-green-500'
+            : 'inline-block w-3 h-3 rounded-full bg-red-500';
+
+        badge.className = online
+            ? 'px-2 py-1 rounded text-xs bg-green-100 text-green-700'
+            : 'px-2 py-1 rounded text-xs bg-red-100 text-red-700';
+
+        badge.innerText = online ? 'Online' : 'Offline';
+    }
+
+    function updateCustomer(id, online) {
+
+        const customerId = String(id);
+        const dotId = `customer-dot-${customerId}`;
+        const statusId = `customer-status-${customerId}`;
+        
+        
+        const dot = document.getElementById(dotId);
+        const status = document.getElementById(statusId);
+
+        if (!dot || !status) {
+            return;
+        }
+
+        const dotClass = online ? 'bg-green-500' : 'bg-red-500';
+        const statusClass = online ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
+        const statusText = online ? 'Online' : 'Offline';
+
+        dot.className = `inline-block w-3 h-3 rounded-full ${dotClass}`;
+        status.className = `px-2 py-1 rounded text-xs ${statusClass}`;
+        status.innerText = statusText;
+        
+    }
+
+    function normalizeId(id) {
+        return typeof id === 'string' && id.includes('-')
+            ? id.split('-')[1]
+            : id;
+    }
 });
 </script>
 @endpush
+
+

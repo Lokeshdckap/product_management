@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Customer\PresenceController;
 
 Broadcast::routes([
     'middleware' => ['web', 'broadcast.auth'],
@@ -22,9 +23,6 @@ Route::get('/', function () {
 
     return redirect()->route('login');
 });
-
-
-
 
 
 

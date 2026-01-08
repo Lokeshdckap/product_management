@@ -13,8 +13,8 @@ class DashboardController extends Controller
     public function __invoke()
     {
         return view("admin.dashboard", [
-            "admins" => Admin::select("id", "name")->get(),
-            "customers" => Customer::select("id", "name")->get(),
+            "admins" => Admin::select("id", "name", "is_online")->get(),
+            "customers" => Customer::select("id", "name", "is_online")->get(),
         ]);
     }
 }
