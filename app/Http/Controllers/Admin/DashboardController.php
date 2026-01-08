@@ -10,7 +10,7 @@ use App\Models\Customer;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function __invoke()
     {
         return view("admin.dashboard", [
             "admins" => Admin::select("id", "name")->get(),

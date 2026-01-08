@@ -12,7 +12,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::latest()->paginate(10);
+        $categories = Category::query()->latest()->paginate(10);
 
         return view("admin.categories.index", compact("categories"));
     }
@@ -41,7 +41,6 @@ class CategoryController extends Controller
         }
 
         $category = new Category();
-        $category->uuid = (string) Str::uuid();
         $category->name = $validator->validated()["name"];
         $category->save();
 

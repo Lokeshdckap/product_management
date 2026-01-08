@@ -33,7 +33,6 @@ class RegistrationController extends Controller
         }
 
         $admin = new Admin();
-        $admin->uuid = Str::uuid();
         $admin->name = $request->name;
         $admin->email = $request->email;
         $admin->password = Hash::make($request->password);

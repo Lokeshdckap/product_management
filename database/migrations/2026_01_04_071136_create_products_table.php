@@ -11,19 +11,19 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::create('products', function (Blueprint $table) {
-            $table->id();
-            $table->uuid('uuid')->unique();
-            $table->string('name');
-            $table->text('description')->nullable();
-            $table->decimal('price', 10, 2);
-            $table->string('image')->nullable(); 
-            $table->foreignIdFor(Category::class)->nullable()->constrained('categories')->onDelete('set null');
-            $table->integer('stock')->default(0);
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('products', function (Blueprint $table) {
+        $table->id();
+        $table->uuid('uuid')->unique();
+        $table->string('name')->index();
+        $table->text('description')->nullable();
+        $table->decimal('price', 10, 2);
+        $table->integer('stock')->default(0);
+        $table->string('image')->nullable();
+        $table->foreignIdFor(Category::class)->nullable()->constrained()->nullOnDelete()->index();
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.

@@ -37,7 +37,8 @@
                 {{-- Description Field --}}
                 <div class="mb-6">
                     <label for="description" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Description <span class="text-red-500">*</span>
+                        Description 
+                        <!-- <span class="text-red-500">*</span> -->
                     </label>
                     <textarea 
                         name="description" 
@@ -100,7 +101,8 @@
                 {{-- Category Field --}}
                 <div class="mb-6">
                     <label for="category_id" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Category <span class="text-red-500">*</span>
+                        Category 
+                        <!-- <span class="text-red-500">*</span> -->
                     </label>
                     <select 
                         name="category_id" 
@@ -122,7 +124,8 @@
                 {{-- Image Upload Field --}}
                 <div class="mb-6">
                     <label for="image" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Product Image <span class="text-red-500">*</span>
+                        Product Image 
+                        <!-- <span class="text-red-500">*</span> -->
                     </label>
                     <div class="flex items-center justify-center w-full">
                         <label for="image" class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition @error('image') border-red-500 @enderror">
