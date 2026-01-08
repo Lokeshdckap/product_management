@@ -135,6 +135,15 @@ Installation & Setup
     php artisan migrate
     php artisan serve
     php artisan queue:work
+Routes
+
+      Customers 
+         http://127.0.0.1:8000/login
+         http://127.0.0.1:8000/register
+     Admin 
+        http://127.0.0.1:8000/admin/login
+        http://127.0.0.1:8000/admin/register
+
 
 Testing
 
