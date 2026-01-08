@@ -22,10 +22,19 @@
             <span class="text-gray-700 font-medium">
                 {{ auth('customer')->user()->name }}
             </span>
+            <svg class="w-4 h-4 text-gray-600"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2"
+             viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M19 9l-7 7-7-7" />
+        </svg>
         </button>
 
         <div id="userMenu"
              class="hidden absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg">
+
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button class="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100">
