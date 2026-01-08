@@ -114,7 +114,7 @@ Bulk Product Import
     
     Sample Import File
     
-    storage/app/sample/products_sample_import.csv
+    /products_sample_import.csv
     
     
     Contains:
