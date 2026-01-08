@@ -127,8 +127,8 @@ Invalid rows (for validation testing)
 
 Installation & Setup
 
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
+git clone git@github.com:Lokeshdckap/product_management.git
+cd backend
 composer install
 npm install
 npm run build
@@ -170,7 +170,7 @@ Chunked processing for memory efficiency
 
 Separate dashboards per user type
 
-⚡ Performance Considerations
+ Performance Considerations
 
 Chunked Excel processing
 
